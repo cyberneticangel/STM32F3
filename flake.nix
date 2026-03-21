@@ -11,6 +11,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
       in {
+        # Development shell (this works)
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             rustc
@@ -25,6 +26,16 @@
             echo "Rust version: $(rustc --version)"
             echo "Cargo version: $(cargo --version)"
           '';
+        };
+        
+        # Optional: Add packages attribute even if empty
+        packages.default = pkgs.rustPlatform.buildRustPackage {
+          pname = "my-rust-app";
+          version = "0.1.0";
+          src = ./.;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+          };
         };
       });
 }
